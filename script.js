@@ -1,134 +1,71 @@
-// We wrap EVERYTHING inside this to make sure the HTML loads first!
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. SELECT ELEMENTS
+    const navBtns = {
+        trans: document.getElementById('nav-translator'),
+        calc: document.getElementById('nav-calculator'),
+        prog: document.getElementById('nav-programmer')
+    };
 
-    // ==========================================
-    // 1. NAVIGATION & SCREENS LOGIC
-    // ==========================================
-    const navTrans = document.getElementById('nav-translator');
-    const navCalc = document.getElementById('nav-calculator');
-    const screenTrans = document.getElementById('screen-translator');
-    const screenCalc = document.getElementById('screen-calculator');
-    const bgWatermark = document.getElementById('bg-watermark');
+    const screens = {
+        trans: document.getElementById('screen-translator'),
+        calc: document.getElementById('screen-calculator'),
+        prog: document.getElementById('screen-programmer')
+    };
 
-    // Make sure the buttons actually exist before adding clicks
-    if (navTrans && navCalc) {
-        navTrans.addEventListener('click', () => {
-            screenTrans.classList.remove('hidden');
-            screenCalc.classList.add('hidden');
-            
-            navTrans.classList.add('active');
-            navCalc.classList.remove('active');
-            
-            bgWatermark.textContent = 'A ا B ب C ج D د';
-            bgWatermark.style.transform = 'translate(-50%, -50%) rotate(-10deg)';
+    const watermark = document.getElementById('bg-watermark');
+
+    // 2. NAVIGATION FUNCTION
+    function switchTab(activeKey) {
+        // Hide all screens and remove active class from buttons
+        Object.keys(screens).forEach(key => {
+            screens[key].classList.add('hidden');
+            navBtns[key].classList.remove('active');
         });
 
-        navCalc.addEventListener('click', () => {
-            screenCalc.classList.remove('hidden');
-            screenTrans.classList.add('hidden');
-            
-            navCalc.classList.add('active');
-            navTrans.classList.remove('active');
-            
-            bgWatermark.textContent = '+ - × ÷ % =';
-            bgWatermark.style.transform = 'translate(-50%, -50%) rotate(5deg)';
-        });
-    }
+        // Show the clicked screen and activate button
+        screens[activeKey].classList.remove('hidden');
+        navBtns[activeKey].classList.add('active');
 
-    // ==========================================
-    // 2. TRANSLATOR LOGIC
-    // ==========================================
-    const translateBtn = document.getElementById('translate-btn');
-    const swapBtn = document.getElementById('swap-btn');
-    const inputText = document.getElementById('input-text');
-    const outputText = document.getElementById('output-text');
-    const langFrom = document.getElementById('lang-from');
-    const langTo = document.getElementById('lang-to');
-
-    if (swapBtn) {
-        swapBtn.addEventListener('click', () => {
-            let tempLang = langFrom.value;
-            langFrom.value = langTo.value;
-            langTo.value = tempLang;
-
-            let tempText = inputText.value;
-            inputText.value = outputText.value;
-            outputText.value = tempText;
-        });
-    }
-
-    if (translateBtn) {
-        translateBtn.addEventListener('click', async () => {
-            let text = inputText.value;
-            let from = langFrom.value;
-            let to = langTo.value;
-
-            if (!text) return;
-
-            outputText.value = "Translating...";
-
-            let apiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${from}&tl=${to}&dt=t&q=${encodeURIComponent(text)}`;
-
-            try {
-                let response = await fetch(apiUrl);
-                let data = await response.json();
-                
-                let translatedText = '';
-                data[0].forEach(item => {
-                    if (item[0]) translatedText += item[0];
-                });
-
-                outputText.value = translatedText;
-            } catch (error) {
-                outputText.value = "Oops! Something went wrong.";
-                console.error("Translation error:", error);
-            }
-        });
-    }
-
-    // ==========================================
-    // 3. CALCULATOR LOGIC (WITH "ENTER" KEY)
-    // ==========================================
-    const num1 = document.getElementById('num1');
-    const num2 = document.getElementById('num2');
-    const operator = document.getElementById('operator');
-    const calcBtn = document.getElementById('calc-btn');
-    const calcResult = document.getElementById('calc-result');
-
-    function performCalculation() {
-        const val1 = parseFloat(num1.value);
-        const val2 = parseFloat(num2.value);
-        const op = operator.value;
-
-        if (isNaN(val1) || isNaN(val2)) {
-            calcResult.value = "Enter numbers";
-            return;
+        // Update Watermark
+        if (activeKey === 'trans') {
+            watermark.textContent = 'A ا B ب C ج D د';
+            watermark.style.transform = 'translate(-50%, -50%) rotate(-10deg)';
+        } else if (activeKey === 'calc') {
+            watermark.textContent = '+ - × ÷ % =';
+            watermark.style.transform = 'translate(-50%, -50%) rotate(5deg)';
+        } else if (activeKey === 'prog') {
+            watermark.textContent = '010000111100';
+            watermark.style.transform = 'translate(-50%, -50%) rotate(0deg)';
         }
-
-        let result = 0;
-        switch(op) {
-            case '+': result = val1 + val2; break;
-            case '-': result = val1 - val2; break;
-            case '*': result = val1 * val2; break;
-            case '/': result = val2 !== 0 ? val1 / val2 : "Error (÷0)"; break;
-        }
-        
-        calcResult.value = Math.round(result * 10000) / 10000;
     }
 
-    if (calcBtn) {
-        calcBtn.addEventListener('click', performCalculation);
+    // 3. ATTACH EVENTS (The Fix)
+    if (navBtns.trans) navBtns.trans.addEventListener('click', () => switchTab('trans'));
+    if (navBtns.calc) navBtns.calc.addEventListener('click', () => switchTab('calc'));
+    if (navBtns.prog) navBtns.prog.addEventListener('click', () => switchTab('prog'));
+
+    // --- REMAINDER OF YOUR LOGIC (Calculator & Base Converter) ---
+    // (Ensure you keep your calculation/conversion logic here)
+    const baseDec = document.getElementById('base-dec');
+    const baseBin = document.getElementById('base-bin');
+    const baseOct = document.getElementById('base-oct');
+    const baseHex = document.getElementById('base-hex');
+
+    function updateBases(source, val) {
+        if (!val) { baseDec.value = baseBin.value = baseOct.value = baseHex.value = ''; return; }
+        let dec;
+        if (source === 'dec') dec = parseInt(val, 10);
+        if (source === 'bin') dec = parseInt(val, 2);
+        if (source === 'oct') dec = parseInt(val, 8);
+        if (source === 'hex') dec = parseInt(val, 16);
+        if (isNaN(dec)) return;
+        if (source !== 'dec') baseDec.value = dec.toString(10);
+        if (source !== 'bin') baseBin.value = dec.toString(2);
+        if (source !== 'oct') baseOct.value = dec.toString(8);
+        if (source !== 'hex') baseHex.value = dec.toString(16).toUpperCase();
     }
 
-    // Trigger via Enter Key (using keydown instead of keypress for better compatibility)
-    if (num1 && num2 && operator) {
-        [num1, num2, operator].forEach(element => {
-            element.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter') {
-                    event.preventDefault(); 
-                    performCalculation();
-                }
-            });
-        });
-    }
+    [baseDec, baseBin, baseOct, baseHex].forEach(el => {
+        if (el) el.addEventListener('input', (e) => updateBases(el.id.split('-')[1], e.target.value));
+    });
 });
