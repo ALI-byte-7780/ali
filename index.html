@@ -14,61 +14,52 @@
         <nav class="top-nav">
             <button id="nav-translator" class="nav-btn active">🌐 Translator</button>
             <button id="nav-calculator" class="nav-btn">🧮 Calculator</button>
+            <button id="nav-programmer" class="nav-btn">🤖 Base Converter</button>
         </nav>
 
         <div id="screen-translator" class="container">
             <h2>✨ Pro Translator</h2>
-            
             <div class="controls">
                 <div class="select-wrapper">
                     <select id="lang-from">
                         <option value="en">🇬🇧 English</option>
                         <option value="ar">🇸🇦 Arabic</option>
-                        <option value="es">🇪🇸 Spanish</option>
-                        <option value="fr">🇫🇷 French</option>
                     </select>
                 </div>
-                
-                <button id="swap-btn" title="Swap Languages">⇄</button>
-                
+                <button id="swap-btn">⇄</button>
                 <div class="select-wrapper">
                     <select id="lang-to">
                         <option value="ar">🇸🇦 Arabic</option>
                         <option value="en">🇬🇧 English</option>
-                        <option value="es">🇪🇸 Spanish</option>
-                        <option value="fr">🇫🇷 French</option>
                     </select>
                 </div>
             </div>
-
             <div class="text-areas">
-                <textarea id="input-text" dir="auto" placeholder="Type text here..."></textarea>
-                <textarea id="output-text" dir="auto" placeholder="Translation will appear here..." readonly></textarea>
+                <textarea id="input-text" placeholder="Type here..."></textarea>
+                <textarea id="output-text" placeholder="Translation..." readonly></textarea>
             </div>
-
             <button id="translate-btn">Translate</button>
         </div>
 
         <div id="screen-calculator" class="container hidden">
-            <h2>🧮 Basic Math</h2>
-            
+            <h2>🧮 Math</h2>
             <div class="math-controls">
                 <input type="number" id="num1" placeholder="0">
-                
-                <select id="operator">
-                    <option value="+">+</option>
-                    <option value="-">-</option>
-                    <option value="*">×</option>
-                    <option value="/">÷</option>
-                </select>
-                
+                <select id="operator"><option>+</option><option>-</option><option>*</option><option>/</option></select>
                 <input type="number" id="num2" placeholder="0">
-                
                 <button id="calc-btn">=</button>
-                
-                <input type="text" id="calc-result" placeholder="Result" readonly>
+                <input type="text" id="calc-result" readonly>
             </div>
-            <p class="hint">💡 Pro tip: Press "Enter" to calculate</p>
+        </div>
+
+        <div id="screen-programmer" class="container hidden">
+            <h2>🤖 Base Converter</h2>
+            <div class="base-inputs">
+                <div class="input-group"><label>Decimal</label><input type="text" id="base-dec"></div>
+                <div class="input-group"><label>Binary</label><input type="text" id="base-bin"></div>
+                <div class="input-group"><label>Octal</label><input type="text" id="base-oct"></div>
+                <div class="input-group"><label>Hex</label><input type="text" id="base-hex"></div>
+            </div>
         </div>
     </div>
 
