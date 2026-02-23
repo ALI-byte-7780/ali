@@ -1,0 +1,177 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: linear-gradient(135deg, #e0eafc, #cfdef3);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 20px;
+    overflow-x: hidden;
+}
+
+/* --- THE FULL SCREEN WATERMARK --- */
+#bg-watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-10deg);
+    font-size: 15vw; /* Scales with screen size */
+    color: rgba(0, 0, 0, 0.04); /* Very faint */
+    font-weight: bold;
+    white-space: nowrap;
+    pointer-events: none; /* Click right through it */
+    z-index: 0;
+    transition: all 0.4s ease-in-out; /* Smooth swap when changing screens */
+}
+
+.app-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 800px;
+    position: relative;
+    z-index: 1; /* Keeps app above watermark */
+}
+
+/* --- TOP NAVIGATION --- */
+.top-nav {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.nav-btn {
+    padding: 12px 25px;
+    border-radius: 30px;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.5);
+    color: #4b5563;
+    transition: all 0.2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.nav-btn:hover { background-color: rgba(255, 255, 255, 0.8); }
+
+.nav-btn.active {
+    background-color: #3b82f6;
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+/* --- APP CONTAINERS --- */
+.container {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Hides inactive screens */
+.hidden { display: none !important; }
+
+h2 {
+    text-align: center;
+    color: #1f2937;
+    margin-bottom: 30px;
+    font-size: 26px;
+}
+
+/* --- INPUTS & BUTTONS --- */
+.controls, .math-controls {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 15px;
+}
+
+.select-wrapper { flex: 1; }
+
+select, input[type="number"], input[type="text"], textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 16px;
+    color: #374151;
+    background-color: #f9fafb;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+select:focus, input:focus, textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+#swap-btn, #calc-btn {
+    background-color: #f3f4f6;
+    color: #4b5563;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+#swap-btn:hover, #calc-btn:hover { background-color: #e5e7eb; transform: scale(1.05); }
+
+#calc-btn { background-color: #3b82f6; color: white; }
+#calc-btn:hover { background-color: #2563eb; }
+
+.text-areas { display: flex; gap: 20px; margin-bottom: 25px; }
+
+textarea {
+    flex: 1;
+    height: 180px;
+    resize: none;
+    line-height: 1.5;
+}
+
+#output-text, #calc-result { background-color: #f9fafb; font-weight: bold;}
+
+#translate-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#translate-btn:hover { background-color: #2563eb; }
+
+.hint {
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+    margin-top: 15px;
+}
+
+@media (max-width: 650px) {
+    .controls, .text-areas, .math-controls { flex-direction: column; }
+    #swap-btn { transform: rotate(90deg); }
+    #swap-btn:hover { transform: rotate(90deg) scale(1.05); }
+    #calc-btn { width: 100%; border-radius: 8px; }
+}

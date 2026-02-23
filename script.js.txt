@@ -1,0 +1,134 @@
+// We wrap EVERYTHING inside this to make sure the HTML loads first!
+document.addEventListener('DOMContentLoaded', () => {
+
+    // ==========================================
+    // 1. NAVIGATION & SCREENS LOGIC
+    // ==========================================
+    const navTrans = document.getElementById('nav-translator');
+    const navCalc = document.getElementById('nav-calculator');
+    const screenTrans = document.getElementById('screen-translator');
+    const screenCalc = document.getElementById('screen-calculator');
+    const bgWatermark = document.getElementById('bg-watermark');
+
+    // Make sure the buttons actually exist before adding clicks
+    if (navTrans && navCalc) {
+        navTrans.addEventListener('click', () => {
+            screenTrans.classList.remove('hidden');
+            screenCalc.classList.add('hidden');
+            
+            navTrans.classList.add('active');
+            navCalc.classList.remove('active');
+            
+            bgWatermark.textContent = 'A ا B ب C ج D د';
+            bgWatermark.style.transform = 'translate(-50%, -50%) rotate(-10deg)';
+        });
+
+        navCalc.addEventListener('click', () => {
+            screenCalc.classList.remove('hidden');
+            screenTrans.classList.add('hidden');
+            
+            navCalc.classList.add('active');
+            navTrans.classList.remove('active');
+            
+            bgWatermark.textContent = '+ - × ÷ % =';
+            bgWatermark.style.transform = 'translate(-50%, -50%) rotate(5deg)';
+        });
+    }
+
+    // ==========================================
+    // 2. TRANSLATOR LOGIC
+    // ==========================================
+    const translateBtn = document.getElementById('translate-btn');
+    const swapBtn = document.getElementById('swap-btn');
+    const inputText = document.getElementById('input-text');
+    const outputText = document.getElementById('output-text');
+    const langFrom = document.getElementById('lang-from');
+    const langTo = document.getElementById('lang-to');
+
+    if (swapBtn) {
+        swapBtn.addEventListener('click', () => {
+            let tempLang = langFrom.value;
+            langFrom.value = langTo.value;
+            langTo.value = tempLang;
+
+            let tempText = inputText.value;
+            inputText.value = outputText.value;
+            outputText.value = tempText;
+        });
+    }
+
+    if (translateBtn) {
+        translateBtn.addEventListener('click', async () => {
+            let text = inputText.value;
+            let from = langFrom.value;
+            let to = langTo.value;
+
+            if (!text) return;
+
+            outputText.value = "Translating...";
+
+            let apiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${from}&tl=${to}&dt=t&q=${encodeURIComponent(text)}`;
+
+            try {
+                let response = await fetch(apiUrl);
+                let data = await response.json();
+                
+                let translatedText = '';
+                data[0].forEach(item => {
+                    if (item[0]) translatedText += item[0];
+                });
+
+                outputText.value = translatedText;
+            } catch (error) {
+                outputText.value = "Oops! Something went wrong.";
+                console.error("Translation error:", error);
+            }
+        });
+    }
+
+    // ==========================================
+    // 3. CALCULATOR LOGIC (WITH "ENTER" KEY)
+    // ==========================================
+    const num1 = document.getElementById('num1');
+    const num2 = document.getElementById('num2');
+    const operator = document.getElementById('operator');
+    const calcBtn = document.getElementById('calc-btn');
+    const calcResult = document.getElementById('calc-result');
+
+    function performCalculation() {
+        const val1 = parseFloat(num1.value);
+        const val2 = parseFloat(num2.value);
+        const op = operator.value;
+
+        if (isNaN(val1) || isNaN(val2)) {
+            calcResult.value = "Enter numbers";
+            return;
+        }
+
+        let result = 0;
+        switch(op) {
+            case '+': result = val1 + val2; break;
+            case '-': result = val1 - val2; break;
+            case '*': result = val1 * val2; break;
+            case '/': result = val2 !== 0 ? val1 / val2 : "Error (÷0)"; break;
+        }
+        
+        calcResult.value = Math.round(result * 10000) / 10000;
+    }
+
+    if (calcBtn) {
+        calcBtn.addEventListener('click', performCalculation);
+    }
+
+    // Trigger via Enter Key (using keydown instead of keypress for better compatibility)
+    if (num1 && num2 && operator) {
+        [num1, num2, operator].forEach(element => {
+            element.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); 
+                    performCalculation();
+                }
+            });
+        });
+    }
+});
